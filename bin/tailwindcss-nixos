@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+if [ "$1" == "--version" ]; then
+    echo "tailwindcss v4.1.11"
+    exit 0
+fi
+steam-run ./var/tailwind/v4.1.11/tailwindcss-linux-x64 "$@"

@@ -1,0 +1,29 @@
+@import "tailwindcss";
+@source "/home/noa/Documents/cercle Duclos/sitecercleduclos/templates/**/*.html.twig";
+
+@theme {
+    --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+    --font-mono: "Russo One", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    --color-blue-950: #0a192f;
+}
+
+/* Cyberpunk Custom Styles */
+.scanlines {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    background-size: 100% 2px, 3px 100%;
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.15;
+}
+
+.dark .scanlines {
+    opacity: 0.3;
+}
+
+/* Ensure dark mode variants are generated */
+@custom-variant dark (&:where(.dark, .dark *));

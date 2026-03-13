@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Création d'article | SECTION ADMIN{% endblock %}
+
+{% block body %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 animate-in fade-in duration-500">
+    <div class="mb-12 border-l-4 border-blue-900 dark:border-blue-500 pl-6">
+        <div class="font-mono text-blue-900 dark:text-blue-500 text-sm mb-2 uppercase tracking-widest font-bold">ADMINISTRATION</div>
+        <h2 class="text-4xl md:text-5xl font-black text-slate-900 dark:text-white uppercase tracking-tighter">Création d'article</h2>
+    </div>
+    
+    <div class="bg-white dark:bg-black border border-slate-200 dark:border-zinc-800 p-8 shadow-xl relative overflow-hidden">
+        <!-- Decorative corner -->
+        <div class="absolute top-0 right-0 w-16 h-16 bg-blue-900/5 dark:bg-blue-500/5 -rotate-45 translate-x-8 -translate-y-8"></div>
+        
+        <form action="#" method="POST" class="space-y-8 relative z-10">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="space-y-2">
+                    <label for="title" class="block font-mono text-xs uppercase tracking-widest text-slate-500 dark:text-zinc-500 font-bold">Titre de l'article</label>
+                    <input type="text" id="title" name="title" class="w-full bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 px-4 py-3 font-sans text-slate-900 dark:text-white focus:border-blue-900 dark:focus:border-blue-500 outline-none transition-colors" placeholder="Ex: La nation et la lutte des classes">
+                </div>
+                <div class="space-y-2">
+                    <label for="category" class="block font-mono text-xs uppercase tracking-widest text-slate-500 dark:text-zinc-500 font-bold">Catégorie</label>
+                    <select id="category" name="category" class="w-full bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 px-4 py-3 font-sans text-slate-900 dark:text-white focus:border-blue-900 dark:focus:border-blue-500 outline-none transition-colors appearance-none">
+                        <option value="politique">Politique</option>
+                        <option value="histoire">Histoire</option>
+                        <option value="theorie">Théorie</option>
+                        <option value="archives">Archives</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="space-y-2">
+                <label for="excerpt" class="block font-mono text-xs uppercase tracking-widest text-slate-500 dark:text-zinc-500 font-bold">Résumé (Chapeau)</label>
+                <textarea id="excerpt" name="excerpt" rows="3" class="w-full bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 px-4 py-3 font-sans text-slate-900 dark:text-white focus:border-blue-900 dark:focus:border-blue-500 outline-none transition-colors" placeholder="Bref résumé de l'article..."></textarea>
+            </div>
+
+            <div class="space-y-2">
+                <label for="content" class="block font-mono text-xs uppercase tracking-widest text-slate-500 dark:text-zinc-500 font-bold">Contenu de l'article</label>
+                <textarea id="content" name="content" rows="12" class="w-full bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 px-4 py-3 font-sans text-slate-900 dark:text-white focus:border-blue-900 dark:focus:border-blue-500 outline-none transition-colors" placeholder="Rédigez votre article ici..."></textarea>
+            </div>
+
+            <div class="flex justify-end pt-4">
+                <button type="submit" class="bg-blue-900 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-500 text-white dark:text-black px-10 py-4 text-xs font-black uppercase tracking-[0.2em] transition-all shadow-lg hover:shadow-blue-900/20 dark:hover:shadow-blue-500/20 flex items-center gap-3 group">
+                    Publier l'article
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="group-hover:translate-x-1 transition-transform"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="mt-12 flex items-center gap-4 text-slate-400 dark:text-zinc-600 font-mono text-[10px] uppercase tracking-widest">
+        <div class="h-px flex-grow bg-slate-200 dark:bg-zinc-800"></div>
+        <span>Système de publication v1.0</span>
+        <div class="h-px flex-grow bg-slate-200 dark:bg-zinc-800"></div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="fr" class="{% if app.request.cookies.get('theme') == 'dark' %}dark{% endif %}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CERCLE DUCLOS | Indépendance & Reconquête{% endblock %}</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Merriweather:wght@300;400;700&family=Oswald:wght@300;500;700&family=Russo+One&display=swap" rel="stylesheet">
+    
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('assets/favicon/favicon-32x32.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('assets/favicon/apple-icon-180x180.png') }}">
+    <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('assets/favicon/android-icon-192x192.png') }}">
+    
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('styles/main.css') }}">
+    {% endblock %}
+
+    {% block javascripts %}
+        {% block importmap %}{{ importmap('app') }}{% endblock %}
+        <script>
+            // Immediate theme check to avoid FOUC
+            (function() {
+                const theme = document.cookie.match(/theme=([^;]+)/)?.[1];
+                if (theme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+            })();
+
+            // Theme management
+            function toggleTheme() {
+                const html = document.documentElement;
+                const isDark = html.classList.toggle('dark');
+                document.cookie = `theme=${isDark ? 'dark' : 'light'};path=/;max-age=31536000;SameSite=Lax`;
+                updateThemeButton(isDark);
+                console.log('Theme toggled:', isDark ? 'dark' : 'light');
+            }
+
+            function updateThemeButton(isDark) {
+                const btnText = document.getElementById('theme-btn-text');
+                const mobileBtnText = document.getElementById('mobile-theme-btn-text');
+                const text = isDark ? 'Thème Clair' : 'Thème Sombre';
+                if (btnText) btnText.textContent = text;
+                if (mobileBtnText) mobileBtnText.textContent = text;
+            }
+
+            // Initialize theme button on load
+            window.addEventListener('DOMContentLoaded', () => {
+                const isDark = document.documentElement.classList.contains('dark');
+                updateThemeButton(isDark);
+            });
+
+            // Mobile menu management
+            function toggleMenu() {
+                const menu = document.getElementById('mobile-menu');
+                menu.classList.toggle('hidden');
+            }
+
+        </script>
+    {% endblock %}
+</head>
+<body class="min-h-screen bg-white dark:bg-black text-slate-800 dark:text-zinc-300 font-sans selection:bg-blue-900 dark:selection:bg-blue-600 selection:text-white flex flex-col relative transition-colors duration-500">
+
+    <!-- SCANLINES OVERLAY REMOVED -->
+
+    <style>
+        /* REFINED RESPONSIVE SPACING */
+        main { 
+           padding-top: 150px !important; 
+           margin-top: 0 !important;
+           transition: none !important; /* Stable padding to avoid jumping */
+        }
+
+        @media (min-width: 1024px) {
+            main {
+                padding-top: 280px !important;
+            }
+        }
+
+        /* FORCE LOGO SIZE */
+        #header-logo {
+            max-height: 120px !important;
+            width: auto !important;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        /* HEADER BASE STATE (COLUMN) */
+        #main-header {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding-top: 3rem !important;
+            padding-bottom: 3rem !important;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            z-index: 1000 !important;
+        }
+
+        #header-container {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            gap: 2rem !important;
+            width: 100% !important;
+        }
+
+        #header-logo-group a {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            gap: 1rem !important;
+        }
+
+        #header-title {
+            font-size: 2.5rem !important;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        /* SCROLLED STATE (ROW) */
+        body.is-scrolled #main-header {
+            flex-direction: row !important;
+            padding-top: 0.5rem !important;
+            padding-bottom: 0.5rem !important;
+        }
+
+        body.is-scrolled #main-header #header-container {
+            flex-direction: row !important;
+            justify-content: space-between !important;
+            gap: 0 !important;
+        }
+
+        body.is-scrolled #main-header #header-logo-group a {
+            flex-direction: row !important;
+            gap: 0.75rem !important;
+        }
+
+        body.is-scrolled #main-header #header-logo {
+            max-height: 50px !important;
+        }
+
+        body.is-scrolled #main-header #header-title {
+            font-size: 1.2rem !important;
+        }
+
+        body.is-scrolled #main-header #theme-toggle-container {
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+        #theme-toggle-container {
+            display: flex !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+    </style>
+
+    <!-- NAVBAR -->
+    <header id="main-header" class="fixed top-0 w-full z-50 bg-white/95 dark:bg-black/90 backdrop-blur-md border-b border-slate-200 dark:border-zinc-800 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+            
+            <!-- Desktop version -->
+            <div class="hidden lg:flex" id="header-container">
+                
+                <!-- Admin Section (Top Left) -->
+                {% if app.user and is_granted('ROLE_ADMIN') %}
+                <div class="absolute left-8 top-4 flex flex-col items-start pointer-events-none">
+                    <span class="text-[10px] font-black text-blue-900 dark:text-blue-500 uppercase tracking-[0.3em] leading-none mb-1">SECTION ADMIN</span>
+                    <span class="text-[11px] font-mono text-slate-500 dark:text-zinc-500 uppercase tracking-widest leading-none">{{ app.user.username }}</span>
+                </div>
+                {% endif %}
+
+                <!-- Logo & Title Group -->
+                <div id="header-logo-group">
+                    <a href="{{ path('app_home') }}" class="group">
+                        <img src="{{ asset('images/logocd.png') }}" alt="Cercle Duclos" id="header-logo">
+                        <span class="font-black tracking-[0.2em] text-slate-900 dark:text-white uppercase" id="header-title">
+                            CERCLE DUCLOS
+                        </span>
+                    </a>
+                </div>
+
+                <!-- Navigation Links -->
+                <div class="flex items-center justify-center gap-10" id="nav-links">
+                    <a href="{{ path('app_home') }}" class="font-mono text-sm uppercase tracking-[0.2em] hover:text-blue-900 dark:hover:text-white font-bold pb-1 {% if app.request.attributes.get('_route') == 'app_home' %}text-blue-900 dark:text-white border-b-2 border-blue-900 dark:border-blue-500{% else %}text-slate-600 dark:text-zinc-400 hover:border-b-2 hover:border-blue-900 dark:hover:border-blue-500{% endif %}">
+                        ACCUEIL
+                    </a>
+
+                    <div class="relative group">
+                        <button class="flex items-center gap-1 font-mono text-sm uppercase tracking-[0.2em] text-slate-600 dark:text-zinc-400 hover:text-blue-900 dark:hover:text-white font-bold pb-1 group-hover:border-b-2 group-hover:border-blue-900 dark:group-hover:border-blue-500">
+                            À PROPOS <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-900 dark:text-blue-500"><polyline points="6 9 12 15 18 9"/></svg>
+                        </button>
+                        <div class="absolute left-1/2 -translate-x-1/2 top-full pt-2 w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                            <div class="bg-white dark:bg-black border border-slate-200 dark:border-zinc-800 border-l-2 border-l-blue-900 dark:border-l-blue-500 shadow-xl p-2">
+                                <a href="{{ path('app_about') }}" class="block px-3 py-2 text-xs font-mono uppercase transition-colors font-semibold text-slate-600 dark:text-zinc-400 hover:text-blue-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-zinc-900/50">Qui sommes-nous ?</a>
+                                <a href="{{ path('app_faq') }}" class="block px-3 py-2 text-xs font-mono uppercase transition-colors font-semibold text-slate-600 dark:text-zinc-400 hover:text-blue-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-zinc-900/50">FAQ</a>
+                                <a href="{{ path('app_cahiers') }}" class="block px-3 py-2 text-xs font-mono uppercase transition-colors font-semibold text-slate-600 dark:text-zinc-400 hover:text-blue-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-zinc-900/50">Cahiers Politiques</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="relative group">
+                        <button class="flex items-center gap-1 font-mono text-sm uppercase tracking-[0.2em] text-slate-600 dark:text-zinc-400 hover:text-blue-900 dark:hover:text-white font-bold pb-1 group-hover:border-b-2 group-hover:border-blue-900 dark:group-hover:border-blue-500">
+                            ARTICLES <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-900 dark:text-blue-500"><polyline points="6 9 12 15 18 9"/></svg>
+                        </button>
+                        <div class="absolute left-1/2 -translate-x-1/2 top-full pt-2 w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                            <div class="bg-white dark:bg-black border border-slate-200 dark:border-zinc-800 border-l-2 border-l-blue-900 dark:border-l-blue-500 shadow-xl p-2">
+                                <a href="{{ path('app_analyses') }}" class="block px-3 py-2 text-xs font-mono uppercase transition-colors font-semibold text-slate-600 dark:text-zinc-400 hover:text-blue-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-zinc-900/50">Politique</a>
+                                <a href="{{ path('app_histoire') }}" class="block px-3 py-2 text-xs font-mono uppercase transition-colors font-semibold text-slate-600 dark:text-zinc-400 hover:text-blue-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-zinc-900/50">Histoire</a>
+                                <a href="{{ path('app_theorie') }}" class="block px-3 py-2 text-xs font-mono uppercase transition-colors font-semibold text-slate-600 dark:text-zinc-400 hover:text-blue-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-zinc-900/50">Théorie</a>
+                                <a href="{{ path('app_archives') }}" class="block px-3 py-2 text-xs font-mono uppercase transition-colors font-semibold text-slate-600 dark:text-zinc-400 hover:text-blue-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-zinc-900/50">Archives</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if app.user and is_granted('ROLE_ADMIN') %}
+                    <div class="relative group">
+                        <button class="flex items-center gap-1 font-mono text-sm uppercase tracking-[0.2em] text-blue-900 dark:text-blue-500 hover:text-blue-800 dark:hover:text-blue-400 font-bold pb-1 group-hover:border-b-2 group-hover:border-blue-900 dark:group-hover:border-blue-500">
+                            ADMINISTRATION <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-900 dark:text-blue-500"><polyline points="6 9 12 15 18 9"/></svg>
+                        </button>
+                        <div class="absolute left-1/2 -translate-x-1/2 top-full pt-2 w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                            <div class="bg-white dark:bg-black border border-slate-200 dark:border-zinc-800 border-l-2 border-l-blue-900 dark:border-l-blue-500 shadow-xl p-2">
+                                <a href="{{ path('admin_article_new') }}" class="block px-3 py-2 text-xs font-mono uppercase transition-colors font-semibold text-slate-600 dark:text-zinc-400 hover:text-blue-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-zinc-900/50">Création d'article</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Right side (Theme Toggle) -->
+                <div id="theme-toggle-container">
+                    <button onclick="toggleTheme()" class="flex items-center gap-2 hover:text-blue-900 dark:hover:text-white transition-colors border border-slate-200 dark:border-zinc-800 px-3 py-1.5 bg-slate-50 dark:bg-zinc-900 text-[10px] font-mono uppercase font-bold">
+                        <span id="theme-btn-text">Thème Sombre</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile version -->
+            <div class="flex lg:hidden justify-between items-center h-16">
+                <a href="{{ path('app_home') }}" class="flex items-center gap-2">
+                    <img src="{{ asset('images/logocd.png') }}" alt="Cercle Duclos" class="h-8 w-auto">
+                    <span class="font-black text-slate-900 dark:text-white tracking-wider uppercase text-lg">Cercle Duclos</span>
+                </a>
+                <button onclick="toggleMenu()" class="text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white p-2 border border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MOBILE MENU PANEL -->
+    <div id="mobile-menu" class="fixed inset-0 z-40 bg-white dark:bg-black pt-20 lg:hidden overflow-y-auto hidden transition-colors duration-500">
+        <div class="p-4 font-mono">
+            <div class="mb-8 border-b border-slate-200 dark:border-zinc-800 pb-6">
+                <button onclick="toggleTheme()" class="w-full flex justify-between items-center mb-6 text-sm font-bold text-blue-900 dark:text-blue-400 border border-slate-200 dark:border-zinc-800 px-3 py-1.5 rounded-sm">
+                    <span>Préférences</span>
+                    <span>Mode {% if app.request.cookies.get('theme') == 'dark' %}Clair{% else %}Sombre{% endif %}</span>
+                </button>
+                <a href="{{ path('app_home') }}" class="w-full text-left px-3 py-3 text-sm uppercase font-bold tracking-wider border-l-2 {% if app.request.attributes.get('_route') == 'app_home' %}border-blue-900 dark:border-blue-500 text-slate-900 dark:text-white bg-slate-50 dark:bg-zinc-900{% else %}border-slate-200 dark:border-zinc-800 text-slate-500 dark:text-zinc-400 hover:text-blue-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-zinc-900/50{% endif %}">ACCUEIL</a>
+            </div>
+            
+            <div class="mb-8">
+                <div class="text-blue-900 dark:text-blue-500 text-xs font-bold uppercase tracking-widest mb-2 border-b border-slate-100 dark:border-zinc-800 pb-2">À PROPOS</div>
+                <div class="flex flex-col space-y-2 mt-3">
+                    <a href="{{ path('app_about') }}" class="text-left px-3 py-3 text-sm uppercase font-bold tracking-wider border-l-2 {% if app.request.attributes.get('_route') == 'app_about' %}border-blue-900 dark:border-blue-500 text-slate-900 dark:text-white bg-slate-50 dark:bg-zinc-900{% else %}border-slate-200 dark:border-zinc-800 text-slate-500 dark:text-zinc-400 hover:text-blue-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-zinc-900/50{% endif %}">Qui sommes-nous ?</a>
+                </div>
+            </div>
+
+            <div class="mb-8">
+                <div class="text-blue-900 dark:text-blue-500 text-xs font-bold uppercase tracking-widest mb-2 border-b border-slate-100 dark:border-zinc-800 pb-2">ARTICLES</div>
+                <div class="flex flex-col space-y-2 mt-3">
+                    <a href="{{ path('app_analyses') }}" class="text-left px-3 py-3 text-sm uppercase font-bold tracking-wider border-l-2 {% if app.request.attributes.get('_route') == 'app_analyses' %}border-blue-900 dark:border-blue-500 text-slate-900 dark:text-white bg-slate-50 dark:bg-zinc-900{% else %}border-slate-200 dark:border-zinc-800 text-slate-500 dark:text-zinc-400 hover:text-blue-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-zinc-900/50{% endif %}">Politique</a>
+                    <a href="{{ path('app_histoire') }}" class="text-left px-3 py-3 text-sm uppercase font-bold tracking-wider border-l-2 {% if app.request.attributes.get('_route') == 'app_histoire' %}border-blue-900 dark:border-blue-500 text-slate-900 dark:text-white bg-slate-50 dark:bg-zinc-900{% else %}border-slate-200 dark:border-zinc-800 text-slate-500 dark:text-zinc-400 hover:text-blue-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-zinc-900/50{% endif %}">Histoire</a>
+                    <a href="{{ path('app_theorie') }}" class="text-left px-3 py-3 text-sm uppercase font-bold tracking-wider border-l-2 {% if app.request.attributes.get('_route') == 'app_theorie' %}border-blue-900 dark:border-blue-500 text-slate-900 dark:text-white bg-slate-50 dark:bg-zinc-900{% else %}border-slate-200 dark:border-zinc-800 text-slate-500 dark:text-zinc-400 hover:text-blue-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-zinc-900/50{% endif %}">Théorie</a>
+                    <a href="{{ path('app_archives') }}" class="text-left px-3 py-3 text-sm uppercase font-bold tracking-wider border-l-2 {% if app.request.attributes.get('_route') == 'app_archives' %}border-blue-900 dark:border-blue-500 text-slate-900 dark:text-white bg-slate-50 dark:bg-zinc-900{% else %}border-slate-200 dark:border-zinc-800 text-slate-500 dark:text-zinc-400 hover:text-blue-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-zinc-900/50{% endif %}">Archives</a>
+                </div>
+            </div>
+            
+            {% if app.user and is_granted('ROLE_ADMIN') %}
+            <div class="mb-8">
+                <div class="text-blue-900 dark:text-blue-500 text-xs font-bold uppercase tracking-widest mb-2 border-b border-slate-100 dark:border-zinc-800 pb-2">ADMINISTRATION</div>
+                <div class="flex flex-col space-y-2 mt-3">
+                    <a href="{{ path('admin_article_new') }}" class="text-left px-3 py-3 text-sm uppercase font-bold tracking-wider border-l-2 border-slate-200 dark:border-zinc-800 text-slate-500 dark:text-zinc-400 hover:text-blue-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-zinc-900/50">Création d'article</a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <main class="flex-grow z-10">
+        {% block body %}{% endblock %}
+    </main>
+
+    <footer class="bg-slate-50 dark:bg-black border-t border-slate-200 dark:border-zinc-800 py-8 relative z-10 transition-colors duration-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 font-mono text-xs text-slate-500 dark:text-zinc-600">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div>
+                    <span class="text-slate-800 dark:text-zinc-400 font-bold">CERCLE DUCLOS</span> // 2026
+                </div>
+                <div class="flex gap-4 font-bold">
+                    <button class="hover:text-blue-900 dark:hover:text-blue-400 transition-colors">ACCÈS SÉCURISÉ</button>
+                    <button class="hover:text-blue-900 dark:hover:text-blue-400 transition-colors">DÉCONNEXION</button>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
