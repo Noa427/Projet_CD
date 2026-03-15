@@ -19,7 +19,6 @@ class UserCreateType extends AbstractType
         $builder
             ->add('username', TextType::class, [
                 'label' => 'Nom d\'utilisateur',
-                'attr' => ['class' => 'w-full bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 p-3 font-mono text-sm focus:outline-none focus:border-blue-900 dark:focus:border-blue-500 transition-colors'],
                 'constraints' => [
                     new NotBlank(message: 'Veuillez entrer un nom d\'utilisateur'),
                 ],
@@ -29,11 +28,9 @@ class UserCreateType extends AbstractType
                 'mapped' => false,
                 'first_options'  => [
                     'label' => 'Mot de passe',
-                    'attr' => ['class' => 'w-full bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 p-3 font-mono text-sm focus:outline-none focus:border-blue-900 dark:focus:border-blue-500 transition-colors'],
                 ],
                 'second_options' => [
                     'label' => 'Confirmer le mot de passe',
-                    'attr' => ['class' => 'w-full bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 p-3 font-mono text-sm focus:outline-none focus:border-blue-900 dark:focus:border-blue-500 transition-colors'],
                 ],
                 'invalid_message' => 'Les mots de passe doivent être identiques.',
                 'constraints' => [

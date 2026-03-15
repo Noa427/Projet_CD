@@ -59,6 +59,44 @@
                 menu.classList.toggle('hidden');
             }
 
+            // Dropdown Logic (Turbo compatible)
+            document.addEventListener('turbo:load', () => {
+                const dropdownGroups = document.querySelectorAll('.group');
+                
+                dropdownGroups.forEach(group => {
+                    const dropdown = group.querySelector('.v5-dropdown');
+                    if (!dropdown) return;
+
+                    let timer = null;
+
+                    const open = () => {
+                        if (group.classList.contains('is-closing')) return;
+                        group.classList.add('is-open');
+                    };
+
+                    const close = () => {
+                        group.classList.remove('is-open');
+                        group.classList.add('is-closing');
+                        if (timer) clearTimeout(timer);
+                        timer = setTimeout(() => {
+                            group.classList.remove('is-closing');
+                        }, 400);
+                    };
+
+                    group.addEventListener('mouseenter', open);
+                    group.addEventListener('mouseleave', close);
+
+                    // Master Trigger: Button always forces open
+                    const btn = group.querySelector('button');
+                    if (btn) {
+                        btn.addEventListener('mouseenter', () => {
+                            group.classList.remove('is-closing');
+                            group.classList.add('is-open');
+                        });
+                    }
+                });
+            });
+
         </script>
     {% endblock %}
 </head>
@@ -67,22 +105,26 @@
     <!-- SCANLINES OVERLAY REMOVED -->
 
     <style>
-        /* REFINED RESPONSIVE SPACING */
-        main { 
-           padding-top: 150px !important; 
-           margin-top: 0 !important;
-           transition: none !important; /* Stable padding to avoid jumping */
+        /* DYNAMIC SPACING SYSTEM */
+        #header-spacer {
+            height: var(--header-height, 220px);
+            transition: height 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         @media (min-width: 1024px) {
-            main {
-                padding-top: 280px !important;
+            #header-spacer {
+                height: var(--header-height, 300px);
             }
+        }
+
+        main { 
+           margin-top: 0 !important;
+           padding-top: 0 !important;
         }
 
         /* FORCE LOGO SIZE */
         #header-logo {
-            max-height: calc(120px - (var(--scroll-progress, 0) * 75px)) !important;
+            max-height: calc(110px - (var(--scroll-progress, 0) * 65px)) !important;
             width: auto !important;
             transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
         }
@@ -94,14 +136,13 @@
             flex-direction: column !important;
             align-items: center !important;
             justify-content: center !important;
-            padding-top: calc(3rem - (var(--scroll-progress, 0) * 2.25rem)) !important;
-            padding-bottom: calc(3rem - (var(--scroll-progress, 0) * 2.25rem)) !important;
+            padding-top: calc(2.5rem - (var(--scroll-progress, 0) * 1.75rem)) !important;
+            padding-bottom: calc(2.5rem - (var(--scroll-progress, 0) * 1.75rem)) !important;
             transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
             z-index: 1000 !important;
             
-            /* Progressive Visuals - Restored Base Background */
             background-color: rgba(255, 255, 255, calc(0.9 + (var(--scroll-progress, 0) * 0.08))) !important;
-            backdrop-filter: blur(calc(4px + (var(--scroll-progress, 0) * 16px))) !important;
+            backdrop-filter: blur(calc(2px + (var(--scroll-progress, 0) * 8px))) !important;
             border-bottom-color: rgba(226, 232, 240, calc(var(--scroll-progress, 0) * 0.8)) !important;
             box-shadow: 0 20px 40px -15px rgba(0, 0, 0, calc(var(--scroll-progress, 0) * 0.1)) !important;
         }
@@ -115,7 +156,7 @@
             display: flex !important;
             flex-direction: column !important;
             align-items: center !important;
-            gap: calc(2rem - (var(--scroll-progress, 0) * 2rem)) !important;
+            gap: calc(1.5rem - (var(--scroll-progress, 0) * 1.5rem)) !important;
             width: 100% !important;
             transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
         }
@@ -124,39 +165,141 @@
             display: flex !important;
             flex-direction: column !important;
             align-items: center !important;
-            gap: calc(1rem - (var(--scroll-progress, 0) * 0.25rem)) !important;
+            gap: calc(0.75rem - (var(--scroll-progress, 0) * 0.25rem)) !important;
             transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
         }
 
-        #header-title {
-            font-size: calc(2.5rem - (var(--scroll-progress, 0) * 1.3rem)) !important;
+        /* CONSOLIDATED TRANSITIONS */
+        #header-spacer, #header-logo, #main-header, #header-container, 
+        #header-logo-group a, #header-title, #theme-toggle-container {
             transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
         }
 
-        /* SCROLLED STATE (ROW) - Layout Jump handled by class */
-        body.is-scrolled #main-header {
-            flex-direction: row !important;
-        }
-
-        body.is-scrolled #main-header #header-container {
-            flex-direction: row !important;
-            justify-content: space-between !important;
-        }
-
+        /* SCROLLED STATE (ROW) */
+        body.is-scrolled #main-header,
+        body.is-scrolled #main-header #header-container,
         body.is-scrolled #main-header #header-logo-group a {
             flex-direction: row !important;
         }
 
-        body.is-scrolled #main-header #theme-toggle-container {
-            opacity: 1 !important;
-            visibility: visible !important;
+        body.is-scrolled #main-header #header-container {
+            justify-content: space-between !important;
         }
 
         #theme-toggle-container {
             display: flex !important;
             opacity: 1 !important;
             visibility: visible !important;
-            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            z-index: 1 !important; /* Stay below dropdowns */
+        }
+
+        #nav-links {
+            position: relative;
+            z-index: 100; /* Stay above theme toggle */
+        }
+
+        /* CYBERPUNK HIGHLIGHT (SURLIGNAGE) */
+        .surlignage-cyber {
+            position: relative;
+            text-decoration: none !important;
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1.25rem;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            text-transform: uppercase;
+            font-weight: 900;
+            transition: all 0.2s ease;
+            z-index: 1;
+            letter-spacing: 0.05em;
+            color: inherit; /* Ensure it takes parent color by default */
+        }
+
+        .surlignage-cyber::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background-color: #b91c1c; /* Red 700 */
+            background-image: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 1px,
+                rgba(0, 0, 0, 0.1) 1px,
+                rgba(0, 0, 0, 0.1) 2px
+            ); /* Scanlines */
+            z-index: -1;
+            transition: width 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 92% 100%, 0 100%);
+        }
+
+        .surlignage-cyber:hover::before {
+            width: 100%;
+        }
+
+        .surlignage-cyber:hover {
+            color: white !important;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+            transform: translateX(4px);
+            filter: drop-shadow(0 0 10px rgba(185, 28, 28, 0.6));
+            animation: surlignage-glitch 0.3s cubic-bezier(.25,.46,.45,.94) both;
+        }
+
+        @keyframes surlignage-glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 1px); }
+            40% { transform: translate(-2px, -1px); }
+            60% { transform: translate(2px, 1px); }
+            80% { transform: translate(2px, -1px); }
+            100% { transform: translate(0); }
+        }
+
+        /* V5 DROPDOWN CONTAINER */
+        .v5-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            min-width: 260px;
+            background-color: #ffffff !important; /* White in light mode */
+            border-left: 4px solid #2563eb; /* Blue 600 */
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
+            padding: 1.5rem;
+            z-index: 2000 !important; /* Maximum priority */
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+            transform: translateY(10px);
+            pointer-events: none;
+        }
+
+        .dark .v5-dropdown {
+            background-color: #000000 !important; /* Pure Black in dark mode */
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9);
+        }
+
+        .group.is-open .v5-dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .v5-dropdown a {
+            color: #4b5563 !important; /* Gray 600 in light mode */
+            transition: all 0.2s ease;
+        }
+
+        .v5-dropdown a:hover {
+            color: #000000 !important; /* Black in light mode */
+        }
+
+        .dark .v5-dropdown a {
+            color: #a1a1aa !important; /* Zinc 400 in dark mode */
+        }
+
+        .dark .v5-dropdown a:hover {
+            color: white !important;
         }
     </style>
 
@@ -187,46 +330,49 @@
 
                 <!-- Navigation Links -->
                 <div class="flex items-center justify-center gap-10" id="nav-links">
-                    <a href="{{ path('app_home') }}" class="font-mono text-sm uppercase tracking-[0.2em] hover:text-blue-900 dark:hover:text-white font-bold pb-1 {% if app.request.attributes.get('_route') == 'app_home' %}text-blue-900 dark:text-white border-b-2 border-blue-900 dark:border-blue-500{% else %}text-slate-600 dark:text-zinc-400 hover:border-b-2 hover:border-blue-900 dark:hover:border-blue-500{% endif %}">
+                    <a href="{{ path('app_home') }}" class="surlignage-cyber text-sm {% if app.request.attributes.get('_route') == 'app_home' %}text-blue-900 dark:text-blue-500{% else %}text-slate-600 dark:text-zinc-400{% endif %}">
                         ACCUEIL
                     </a>
 
                     <div class="relative group">
-                        <button class="flex items-center gap-1 font-mono text-sm uppercase tracking-[0.2em] text-slate-600 dark:text-zinc-400 hover:text-blue-900 dark:hover:text-white font-bold pb-1 group-hover:border-b-2 group-hover:border-blue-900 dark:group-hover:border-blue-500">
-                            À PROPOS <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-900 dark:text-blue-500"><polyline points="6 9 12 15 18 9"/></svg>
+                        <button class="surlignage-cyber text-sm text-slate-600 dark:text-zinc-400">
+                            À PROPOS
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2 text-blue-900 dark:text-blue-500"><polyline points="6 9 12 15 18 9"/></svg>
                         </button>
-                        <div class="absolute left-1/2 -translate-x-1/2 top-full pt-2 w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                            <div class="bg-white dark:bg-black border border-slate-200 dark:border-zinc-800 border-l-2 border-l-blue-900 dark:border-l-blue-500 shadow-xl p-2">
-                                <a href="{{ path('app_about') }}" class="block px-3 py-2 text-xs font-mono uppercase transition-colors font-semibold text-slate-600 dark:text-zinc-400 hover:text-blue-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-zinc-900/50">Qui sommes-nous ?</a>
-                                <a href="{{ path('app_faq') }}" class="block px-3 py-2 text-xs font-mono uppercase transition-colors font-semibold text-slate-600 dark:text-zinc-400 hover:text-blue-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-zinc-900/50">FAQ</a>
-                                <a href="{{ path('app_cahiers') }}" class="block px-3 py-2 text-xs font-mono uppercase transition-colors font-semibold text-slate-600 dark:text-zinc-400 hover:text-blue-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-zinc-900/50">Cahiers Politiques</a>
+                        <div class="v5-dropdown">
+                            <div class="flex flex-col gap-2">
+                                <a href="{{ path('app_about') }}" class="surlignage-cyber text-xs text-zinc-400">Qui sommes-nous ?</a>
+                                <a href="{{ path('app_faq') }}" class="surlignage-cyber text-xs text-zinc-400">FAQ</a>
+                                <a href="{{ path('app_cahiers') }}" class="surlignage-cyber text-xs text-zinc-400">Cahiers Politiques</a>
                             </div>
                         </div>
                     </div>
 
                     <div class="relative group">
-                        <button class="flex items-center gap-1 font-mono text-sm uppercase tracking-[0.2em] text-slate-600 dark:text-zinc-400 hover:text-blue-900 dark:hover:text-white font-bold pb-1 group-hover:border-b-2 group-hover:border-blue-900 dark:group-hover:border-blue-500">
-                            ARTICLES <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-900 dark:text-blue-500"><polyline points="6 9 12 15 18 9"/></svg>
+                        <button class="surlignage-cyber text-sm text-slate-600 dark:text-zinc-400">
+                            ARTICLES
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2 text-blue-900 dark:text-blue-500"><polyline points="6 9 12 15 18 9"/></svg>
                         </button>
-                        <div class="absolute left-1/2 -translate-x-1/2 top-full pt-2 w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                            <div class="bg-white dark:bg-black border border-slate-200 dark:border-zinc-800 border-l-2 border-l-blue-900 dark:border-l-blue-500 shadow-xl p-2">
-                                <a href="{{ path('app_analyses') }}" class="block px-3 py-2 text-xs font-mono uppercase transition-colors font-semibold text-slate-600 dark:text-zinc-400 hover:text-blue-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-zinc-900/50">Politique</a>
-                                <a href="{{ path('app_histoire') }}" class="block px-3 py-2 text-xs font-mono uppercase transition-colors font-semibold text-slate-600 dark:text-zinc-400 hover:text-blue-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-zinc-900/50">Histoire</a>
-                                <a href="{{ path('app_theorie') }}" class="block px-3 py-2 text-xs font-mono uppercase transition-colors font-semibold text-slate-600 dark:text-zinc-400 hover:text-blue-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-zinc-900/50">Théorie</a>
-                                <a href="{{ path('app_archives') }}" class="block px-3 py-2 text-xs font-mono uppercase transition-colors font-semibold text-slate-600 dark:text-zinc-400 hover:text-blue-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-zinc-900/50">Archives</a>
+                        <div class="v5-dropdown">
+                            <div class="flex flex-col gap-2">
+                                <a href="{{ path('app_analyses') }}" class="surlignage-cyber text-xs text-zinc-400">Politique</a>
+                                <a href="{{ path('app_histoire') }}" class="surlignage-cyber text-xs text-zinc-400">Histoire</a>
+                                <a href="{{ path('app_theorie') }}" class="surlignage-cyber text-xs text-zinc-400">Théorie</a>
+                                <a href="{{ path('app_archives') }}" class="surlignage-cyber text-xs text-zinc-400">Archives</a>
                             </div>
                         </div>
                     </div>
 
                     {% if app.user and is_granted('ROLE_ADMIN') %}
                     <div class="relative group">
-                        <button class="flex items-center gap-1 font-mono text-sm uppercase tracking-[0.2em] text-blue-900 dark:text-blue-500 hover:text-blue-800 dark:hover:text-blue-400 font-bold pb-1 group-hover:border-b-2 group-hover:border-blue-900 dark:group-hover:border-blue-500">
-                            ADMINISTRATION <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-900 dark:text-blue-500"><polyline points="6 9 12 15 18 9"/></svg>
+                        <button class="surlignage-cyber text-sm text-blue-900 dark:text-blue-500">
+                            ADMINISTRATION
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2 text-blue-900 dark:text-blue-500"><polyline points="6 9 12 15 18 9"/></svg>
                         </button>
-                        <div class="absolute left-1/2 -translate-x-1/2 top-full pt-2 w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                            <div class="bg-white dark:bg-black border border-slate-200 dark:border-zinc-800 border-l-2 border-l-blue-900 dark:border-l-blue-500 shadow-xl p-2">
-                                <a href="{{ path('admin_article_new') }}" class="block px-3 py-2 text-xs font-mono uppercase transition-colors font-semibold text-slate-600 dark:text-zinc-400 hover:text-blue-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-zinc-900/50">Création d'article</a>
-                                <a href="{{ path('admin_profile') }}" class="block px-3 py-2 text-xs font-mono uppercase transition-colors font-semibold text-slate-600 dark:text-zinc-400 hover:text-blue-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-zinc-900/50">Gestion Profil</a>
+                        <div class="v5-dropdown">
+                            <div class="flex flex-col gap-2">
+                                <a href="{{ path('admin_article_new') }}" class="surlignage-cyber text-xs text-zinc-400">Création d'article</a>
+                                <a href="{{ path('admin_profile') }}" class="surlignage-cyber text-xs text-zinc-400">Gestion Profil</a>
                             </div>
                         </div>
                     </div>
@@ -235,7 +381,7 @@
 
                 <!-- Right side (Theme Toggle) -->
                 <div id="theme-toggle-container">
-                    <button onclick="toggleTheme()" class="flex items-center gap-2 hover:text-blue-900 dark:hover:text-white transition-colors border border-slate-200 dark:border-zinc-800 px-3 py-1.5 bg-slate-50 dark:bg-zinc-900 text-[10px] font-mono uppercase font-bold">
+                    <button onclick="toggleTheme()" class="surlignage-cyber text-[10px] text-slate-600 dark:text-zinc-400 border border-slate-200 dark:border-zinc-800 bg-white dark:bg-black">
                         <span id="theme-btn-text">Thème Sombre</span>
                     </button>
                 </div>
@@ -247,7 +393,7 @@
                     <img src="{{ asset('images/logocd.png') }}" alt="Cercle Duclos" class="h-8 w-auto">
                     <span class="font-black text-slate-900 dark:text-white tracking-wider uppercase text-lg">Cercle Duclos</span>
                 </a>
-                <button onclick="toggleMenu()" class="text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white p-2 border border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950">
+                <button onclick="toggleMenu()" class="surlignage-cyber text-slate-500 dark:text-zinc-400 p-2 border border-slate-200 dark:border-zinc-800 bg-white dark:bg-black">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
                 </button>
             </div>
@@ -258,27 +404,38 @@
     <div id="mobile-menu" class="fixed inset-0 z-40 bg-white dark:bg-black pt-20 lg:hidden overflow-y-auto hidden transition-colors duration-500">
         <div class="p-4 font-mono">
             <div class="mb-8 border-b border-slate-200 dark:border-zinc-800 pb-6">
-                <button onclick="toggleTheme()" class="w-full flex justify-between items-center mb-6 text-sm font-bold text-blue-900 dark:text-blue-400 border border-slate-200 dark:border-zinc-800 px-3 py-1.5 rounded-sm">
-                    <span>Préférences</span>
-                    <span>Mode {% if app.request.cookies.get('theme') == 'dark' %}Clair{% else %}Sombre{% endif %}</span>
+                <button onclick="toggleTheme()" class="surlignage-cyber w-full flex justify-between items-center mb-6 text-sm text-slate-600 dark:text-zinc-400 border border-slate-200 dark:border-zinc-800 bg-white dark:bg-black px-3 py-1.5">
+                    <span id="mobile-theme-btn-text">Mode {% if app.request.cookies.get('theme') == 'dark' %}Clair{% else %}Sombre{% endif %}</span>
                 </button>
-                <a href="{{ path('app_home') }}" class="w-full text-left px-3 py-3 text-sm uppercase font-bold tracking-wider border-l-2 {% if app.request.attributes.get('_route') == 'app_home' %}border-blue-900 dark:border-blue-500 text-slate-900 dark:text-white bg-slate-50 dark:bg-zinc-900{% else %}border-slate-200 dark:border-zinc-800 text-slate-500 dark:text-zinc-400 hover:text-blue-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-zinc-900/50{% endif %}">ACCUEIL</a>
+                <a href="{{ path('app_home') }}" class="surlignage-cyber w-full text-left px-3 py-3 text-sm {% if app.request.attributes.get('_route') == 'app_home' %}text-blue-900 dark:text-blue-500 bg-slate-50 dark:bg-zinc-900{% else %}text-slate-500 dark:text-zinc-400 hover:bg-slate-50 dark:hover:bg-zinc-900/50{% endif %}">
+                    ACCUEIL
+                </a>
             </div>
             
             <div class="mb-8">
                 <div class="text-blue-900 dark:text-blue-500 text-xs font-bold uppercase tracking-widest mb-2 border-b border-slate-100 dark:border-zinc-800 pb-2">À PROPOS</div>
                 <div class="flex flex-col space-y-2 mt-3">
-                    <a href="{{ path('app_about') }}" class="text-left px-3 py-3 text-sm uppercase font-bold tracking-wider border-l-2 {% if app.request.attributes.get('_route') == 'app_about' %}border-blue-900 dark:border-blue-500 text-slate-900 dark:text-white bg-slate-50 dark:bg-zinc-900{% else %}border-slate-200 dark:border-zinc-800 text-slate-500 dark:text-zinc-400 hover:text-blue-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-zinc-900/50{% endif %}">Qui sommes-nous ?</a>
+                    <a href="{{ path('app_about') }}" class="surlignage-cyber text-left px-3 py-3 text-sm {% if app.request.attributes.get('_route') == 'app_about' %}text-blue-900 dark:text-blue-500 bg-slate-50 dark:bg-zinc-900{% else %}text-slate-500 dark:text-zinc-400 hover:bg-slate-50 dark:hover:bg-zinc-900/50{% endif %}">
+                        Qui sommes-nous ?
+                    </a>
                 </div>
             </div>
 
             <div class="mb-8">
                 <div class="text-blue-900 dark:text-blue-500 text-xs font-bold uppercase tracking-widest mb-2 border-b border-slate-100 dark:border-zinc-800 pb-2">ARTICLES</div>
                 <div class="flex flex-col space-y-2 mt-3">
-                    <a href="{{ path('app_analyses') }}" class="text-left px-3 py-3 text-sm uppercase font-bold tracking-wider border-l-2 {% if app.request.attributes.get('_route') == 'app_analyses' %}border-blue-900 dark:border-blue-500 text-slate-900 dark:text-white bg-slate-50 dark:bg-zinc-900{% else %}border-slate-200 dark:border-zinc-800 text-slate-500 dark:text-zinc-400 hover:text-blue-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-zinc-900/50{% endif %}">Politique</a>
-                    <a href="{{ path('app_histoire') }}" class="text-left px-3 py-3 text-sm uppercase font-bold tracking-wider border-l-2 {% if app.request.attributes.get('_route') == 'app_histoire' %}border-blue-900 dark:border-blue-500 text-slate-900 dark:text-white bg-slate-50 dark:bg-zinc-900{% else %}border-slate-200 dark:border-zinc-800 text-slate-500 dark:text-zinc-400 hover:text-blue-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-zinc-900/50{% endif %}">Histoire</a>
-                    <a href="{{ path('app_theorie') }}" class="text-left px-3 py-3 text-sm uppercase font-bold tracking-wider border-l-2 {% if app.request.attributes.get('_route') == 'app_theorie' %}border-blue-900 dark:border-blue-500 text-slate-900 dark:text-white bg-slate-50 dark:bg-zinc-900{% else %}border-slate-200 dark:border-zinc-800 text-slate-500 dark:text-zinc-400 hover:text-blue-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-zinc-900/50{% endif %}">Théorie</a>
-                    <a href="{{ path('app_archives') }}" class="text-left px-3 py-3 text-sm uppercase font-bold tracking-wider border-l-2 {% if app.request.attributes.get('_route') == 'app_archives' %}border-blue-900 dark:border-blue-500 text-slate-900 dark:text-white bg-slate-50 dark:bg-zinc-900{% else %}border-slate-200 dark:border-zinc-800 text-slate-500 dark:text-zinc-400 hover:text-blue-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-zinc-900/50{% endif %}">Archives</a>
+                    <a href="{{ path('app_analyses') }}" class="surlignage-cyber text-left px-3 py-3 text-sm {% if app.request.attributes.get('_route') == 'app_analyses' %}text-blue-900 dark:text-blue-500 bg-slate-50 dark:bg-zinc-900{% else %}text-slate-500 dark:text-zinc-400 hover:bg-slate-50 dark:hover:bg-zinc-900/50{% endif %}">
+                        Politique
+                    </a>
+                    <a href="{{ path('app_histoire') }}" class="surlignage-cyber text-left px-3 py-3 text-sm {% if app.request.attributes.get('_route') == 'app_histoire' %}text-blue-900 dark:text-blue-500 bg-slate-50 dark:bg-zinc-900{% else %}text-slate-500 dark:text-zinc-400 hover:bg-slate-50 dark:hover:bg-zinc-900/50{% endif %}">
+                        Histoire
+                    </a>
+                    <a href="{{ path('app_theorie') }}" class="surlignage-cyber text-left px-3 py-3 text-sm {% if app.request.attributes.get('_route') == 'app_theorie' %}text-blue-900 dark:text-blue-500 bg-slate-50 dark:bg-zinc-900{% else %}text-slate-500 dark:text-zinc-400 hover:bg-slate-50 dark:hover:bg-zinc-900/50{% endif %}">
+                        Théorie
+                    </a>
+                    <a href="{{ path('app_archives') }}" class="surlignage-cyber text-left px-3 py-3 text-sm {% if app.request.attributes.get('_route') == 'app_archives' %}text-blue-900 dark:text-blue-500 bg-slate-50 dark:bg-zinc-900{% else %}text-slate-500 dark:text-zinc-400 hover:bg-slate-50 dark:hover:bg-zinc-900/50{% endif %}">
+                        Archives
+                    </a>
                 </div>
             </div>
             
@@ -286,14 +443,17 @@
             <div class="mb-8">
                 <div class="text-blue-900 dark:text-blue-500 text-xs font-bold uppercase tracking-widest mb-2 border-b border-slate-100 dark:border-zinc-800 pb-2">ADMINISTRATION</div>
                 <div class="flex flex-col space-y-2 mt-3">
-                    <a href="{{ path('admin_article_new') }}" class="text-left px-3 py-3 text-sm uppercase font-bold tracking-wider border-l-2 border-slate-200 dark:border-zinc-800 text-slate-500 dark:text-zinc-400 hover:text-blue-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-zinc-900/50">Création d'article</a>
+                    <a href="{{ path('admin_article_new') }}" class="surlignage-cyber text-left px-3 py-3 text-sm text-slate-500 dark:text-zinc-400 hover:bg-slate-50 dark:hover:bg-zinc-900/50">
+                        Création d'article
+                    </a>
                 </div>
             </div>
             {% endif %}
         </div>
     </div>
 
-    <main class="flex-grow relative z-10 pt-32 lg:pt-48">
+    <div id="header-spacer"></div>
+    <main class="flex-grow relative z-10">
         {% block body %}{% endblock %}
     </main>
 
@@ -304,8 +464,11 @@
                     <span class="text-slate-800 dark:text-zinc-400 font-bold">CERCLE DUCLOS</span> // 2026
                 </div>
                 <div class="flex gap-4 font-bold">
-                    <button class="hover:text-blue-900 dark:hover:text-blue-400 transition-colors">ACCÈS SÉCURISÉ</button>
-                    <button class="hover:text-blue-900 dark:hover:text-blue-400 transition-colors">DÉCONNEXION</button>
+                    {% if app.user and is_granted('ROLE_ADMIN') %}
+                        <a href="{{ path('app_logout') }}" class="surlignage-cyber text-slate-500 dark:text-zinc-400">
+                            DÉCONNEXION
+                        </a>
+                    {% endif %}
                 </div>
             </div>
         </div>

@@ -4,52 +4,105 @@
 
 {% block body %}
 <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 animate-in fade-in duration-500">
-    <div class="mb-12 border-l-4 border-blue-900 dark:border-blue-500 pl-6">
-        <div class="font-mono text-blue-900 dark:text-blue-500 text-sm mb-2 uppercase tracking-widest font-bold">ADMINISTRATION</div>
-        <h2 class="text-4xl md:text-5xl font-black text-slate-900 dark:text-white uppercase tracking-tighter">Création d'article</h2>
+    <div class="mb-12 border-l-8 border-blue-900 dark:border-blue-500 pl-10">
+        <div class="font-mono text-blue-900 dark:text-blue-500 text-xs mb-4 uppercase tracking-[0.5em] font-black opacity-70">SYSTÈME DE PUBLICATION</div>
+        <h2 class="text-6xl md:text-7xl font-black text-slate-900 dark:text-white uppercase tracking-tighter leading-none">Nouvel Article</h2>
     </div>
+
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
+        }
+        .dark .glass-card {
+            background: rgba(10, 10, 10, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+        }
+        .premium-input {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1.5px solid rgba(0, 0, 0, 0.15);
+            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.03);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            font-size: 0.95rem;
+            letter-spacing: -0.01em;
+        }
+        .dark .premium-input {
+            background: rgba(15, 15, 15, 0.8);
+            border: 1.5px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.4);
+        }
+        .premium-input:focus {
+            background: white;
+            border-color: #1e3a8a;
+            box-shadow: 0 0 0 4px rgba(30, 58, 138, 0.1), inset 0 2px 4px 0 rgba(0, 0, 0, 0.02);
+            transform: translateY(-1px);
+            outline: none;
+        }
+        .dark .premium-input:focus {
+            background: rgba(20, 20, 20, 1);
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15), inset 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+        }
+        .glow-button {
+            transition: all 0.4s cubic-bezier(0.2, 1, 0.2, 1);
+        }
+        .glow-button:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 10px 30px rgba(30, 58, 138, 0.2);
+        }
+        .dark .glow-button:hover {
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+        }
+    </style>
     
-    <div class="bg-white dark:bg-black border border-slate-200 dark:border-zinc-800 p-8 shadow-xl relative overflow-hidden">
-        <!-- Decorative corner -->
-        <div class="absolute top-0 right-0 w-16 h-16 bg-blue-900/5 dark:bg-blue-500/5 -rotate-45 translate-x-8 -translate-y-8"></div>
+    <div class="glass-card p-12 relative overflow-hidden group rounded-[2.5rem]">
+        <div class="absolute -top-32 -right-32 w-64 h-64 bg-blue-900/5 dark:bg-blue-500/5 rounded-full blur-3xl group-hover:bg-blue-900/10 dark:group-hover:bg-blue-500/10 transition-all duration-1000"></div>
         
         <form action="#" method="POST" class="space-y-8 relative z-10">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="space-y-2">
-                    <label for="title" class="block font-mono text-xs uppercase tracking-widest text-slate-500 dark:text-zinc-500 font-bold">Titre de l'article</label>
-                    <input type="text" id="title" name="title" class="w-full bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 px-4 py-3 font-sans text-slate-900 dark:text-white focus:border-blue-900 dark:focus:border-blue-500 outline-none transition-colors" placeholder="Ex: La nation et la lutte des classes">
+                <div class="space-y-4">
+                    <label for="title" class="block font-mono text-[11px] uppercase tracking-[0.3em] text-slate-500 dark:text-zinc-500 font-black ml-2">Titre de l'article</label>
+                    <input type="text" id="title" name="title" class="premium-input w-full px-6 py-5 text-slate-900 dark:text-white outline-none rounded-2xl" placeholder="Ex: La nation et la lutte des classes">
                 </div>
-                <div class="space-y-2">
-                    <label for="category" class="block font-mono text-xs uppercase tracking-widest text-slate-500 dark:text-zinc-500 font-bold">Catégorie</label>
-                    <select id="category" name="category" class="w-full bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 px-4 py-3 font-sans text-slate-900 dark:text-white focus:border-blue-900 dark:focus:border-blue-500 outline-none transition-colors appearance-none">
-                        <option value="politique">Politique</option>
-                        <option value="histoire">Histoire</option>
-                        <option value="theorie">Théorie</option>
-                        <option value="archives">Archives</option>
-                    </select>
+                <div class="space-y-4">
+                    <label for="category" class="block font-mono text-[11px] uppercase tracking-[0.3em] text-slate-500 dark:text-zinc-500 font-black ml-2">Catégorie</label>
+                    <div class="relative">
+                        <select id="category" name="category" class="premium-input w-full px-6 py-5 text-slate-900 dark:text-white outline-none rounded-2xl appearance-none">
+                            <option value="politique">Politique</option>
+                            <option value="histoire">Histoire</option>
+                            <option value="theorie">Théorie</option>
+                            <option value="archives">Archives</option>
+                        </select>
+                        <div class="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="space-y-2">
-                <label for="excerpt" class="block font-mono text-xs uppercase tracking-widest text-slate-500 dark:text-zinc-500 font-bold">Résumé (Chapeau)</label>
-                <textarea id="excerpt" name="excerpt" rows="3" class="w-full bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 px-4 py-3 font-sans text-slate-900 dark:text-white focus:border-blue-900 dark:focus:border-blue-500 outline-none transition-colors" placeholder="Bref résumé de l'article..."></textarea>
+            <div class="space-y-4">
+                <label for="excerpt" class="block font-mono text-[11px] uppercase tracking-[0.3em] text-slate-500 dark:text-zinc-500 font-black ml-2">Résumé (Chapeau)</label>
+                <textarea id="excerpt" name="excerpt" rows="3" class="premium-input w-full px-6 py-5 text-slate-900 dark:text-white outline-none rounded-2xl" placeholder="Bref résumé de l'article..."></textarea>
             </div>
 
-            <div class="space-y-2">
-                <label for="content" class="block font-mono text-xs uppercase tracking-widest text-slate-500 dark:text-zinc-500 font-bold">Contenu de l'article</label>
-                <textarea id="content" name="content" rows="12" class="w-full bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 px-4 py-3 font-sans text-slate-900 dark:text-white focus:border-blue-900 dark:focus:border-blue-500 outline-none transition-colors" placeholder="Rédigez votre article ici..."></textarea>
+            <div class="space-y-4">
+                <label for="content" class="block font-mono text-[11px] uppercase tracking-[0.3em] text-slate-500 dark:text-zinc-500 font-black ml-2">Contenu de l'article</label>
+                <textarea id="content" name="content" rows="12" class="premium-input w-full px-6 py-5 text-slate-900 dark:text-white outline-none rounded-2xl" placeholder="Rédigez votre article ici..."></textarea>
             </div>
 
-            <div class="flex justify-end pt-4">
-                <button type="submit" class="bg-blue-900 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-500 text-white dark:text-black px-10 py-4 text-xs font-black uppercase tracking-[0.2em] transition-all shadow-lg hover:shadow-blue-900/20 dark:hover:shadow-blue-500/20 flex items-center gap-3 group">
+            <div class="flex justify-end pt-10">
+                <button type="submit" class="duclos-link glow-button bg-blue-900 dark:bg-white text-white dark:text-black px-16 py-6 text-xs font-black uppercase tracking-[0.4em] rounded-2xl flex items-center gap-6 shadow-2xl focus:outline-none">
                     Publier l'article
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="group-hover:translate-x-1 transition-transform"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </button>
             </div>
         </form>
     </div>
 
-    <div class="mt-12 flex items-center gap-4 text-slate-400 dark:text-zinc-600 font-mono text-[10px] uppercase tracking-widest">
+    <div class="mt-24 flex items-center gap-8 text-slate-400 dark:text-zinc-600 font-mono text-[11px] uppercase tracking-[0.6em] opacity-50">
         <div class="h-px flex-grow bg-slate-200 dark:bg-zinc-800"></div>
         <span>Système de publication v1.0</span>
         <div class="h-px flex-grow bg-slate-200 dark:bg-zinc-800"></div>

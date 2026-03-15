@@ -3,113 +3,240 @@
 {% block title %}GESTION PROFIL | CERCLE DUCLOS{% endblock %}
 
 {% block body %}
-<div class="max-w-2xl mx-auto px-6 pb-40">
-    <!-- Brute Force Header Fix -->
-    <div class="mt-48 mb-24 text-center relative z-0">
-        <h1 class="text-4xl font-black tracking-tighter uppercase text-slate-900 dark:text-white mb-6">Gestion Profil</h1>
-        <div class="flex justify-center">
-            <div class="h-1 w-12 bg-blue-900 dark:bg-blue-500"></div>
-        </div>
-        <p class="font-mono text-[10px] text-slate-400 dark:text-zinc-600 uppercase tracking-[0.5em] mt-8">Administration Système</p>
+<style>
+    .glass-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(24px);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
+    }
+    .dark .glass-card {
+        background: rgba(10, 10, 10, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+    }
+    .premium-input {
+        background: rgba(255, 255, 255, 0.9);
+        border: 1.5px solid rgba(0, 0, 0, 0.15);
+        box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.03);
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        font-size: 0.95rem;
+        letter-spacing: -0.01em;
+    }
+    .dark .premium-input {
+        background: rgba(15, 15, 15, 0.8);
+        border: 1.5px solid rgba(255, 255, 255, 0.1);
+        box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.4);
+    }
+    .premium-input:focus {
+        background: white;
+        border-color: #1e3a8a;
+        box-shadow: 0 0 0 4px rgba(30, 58, 138, 0.1), inset 0 2px 4px 0 rgba(0, 0, 0, 0.02);
+        transform: translateY(-1px);
+        outline: none;
+    }
+    .dark .premium-input:focus {
+        background: rgba(20, 20, 20, 1);
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15), inset 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+    }
+    .input-icon-container {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 3.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+        border-right: 1px solid rgba(0, 0, 0, 0.05);
+        transition: all 0.4s ease;
+    }
+    .dark .input-icon-container {
+        border-right: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .premium-input:focus ~ .input-icon-container {
+        border-right-color: rgba(30, 58, 138, 0.2);
+    }
+    .dark .premium-input:focus ~ .input-icon-container {
+        border-right-color: rgba(59, 130, 246, 0.3);
+    }
+    .glow-button {
+        transition: all 0.4s cubic-bezier(0.2, 1, 0.2, 1);
+    }
+    .glow-button:hover {
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0 10px 30px rgba(30, 58, 138, 0.2);
+    }
+    .dark .glow-button:hover {
+        box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+    }
+</style>
+
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-24 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+    <div class="mb-20 border-l-8 border-blue-900 dark:border-blue-500 pl-10">
+        <div class="font-mono text-blue-900 dark:text-blue-500 text-xs mb-4 uppercase tracking-[0.5em] font-black opacity-70">SYSTÈME DE CONTRÔLE</div>
+        <h2 class="text-6xl md:text-7xl font-black text-slate-900 dark:text-white uppercase tracking-tighter leading-none">Profil</h2>
     </div>
 
     {% for message in app.flashes('success') %}
-        <div class="bg-blue-900 dark:bg-blue-600 text-white px-8 py-5 mb-20 font-mono text-[10px] uppercase tracking-[0.2em] text-center shadow-2xl">
-            {{ message }}
+        <div class="glass-card border-l-4 border-emerald-500 text-slate-900 dark:text-white px-10 py-8 mb-20 flex items-center gap-6 animate-in zoom-in duration-700">
+            <div class="h-12 w-12 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-500">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="font-mono text-sm uppercase tracking-widest font-bold">{{ message }}</div>
         </div>
     {% endfor %}
 
-    <div class="space-y-32">
+    <div class="space-y-24">
         <!-- Section: Mon Profil -->
-        <section>
-            <div class="mb-12">
-                <h2 class="text-xs font-black uppercase tracking-[0.3em] text-slate-400 dark:text-zinc-600 border-b border-slate-100 dark:border-zinc-900 pb-4 mb-10">01. Mes Identifiants</h2>
+        <section class="glass-card p-12 relative overflow-hidden group rounded-[2.5rem]">
+            <div class="absolute -top-32 -right-32 w-64 h-64 bg-blue-900/5 dark:bg-blue-500/5 rounded-full blur-3xl group-hover:bg-blue-900/10 dark:group-hover:bg-blue-500/10 transition-all duration-1000"></div>
+            
+            <div class="mb-16 relative z-10 flex items-center justify-between">
+                <div class="flex items-center gap-6">
+                    <div class="h-12 w-12 rounded-2xl bg-slate-900 dark:bg-white flex items-center justify-center text-white dark:text-black font-black text-lg shadow-xl">01</div>
+                    <h3 class="text-xl font-black uppercase tracking-[0.2em] text-slate-900 dark:text-white">Paramètres du Compte</h3>
+                </div>
+                <div class="h-px flex-grow mx-10 bg-slate-200 dark:bg-zinc-800 opacity-50"></div>
             </div>
 
-            {{ form_start(profileForm, {'attr': {'class': 'space-y-10'}}) }}
-                <div class="space-y-3">
-                    {{ form_label(profileForm.username, null, {'label_attr': {'class': 'block font-mono text-[9px] uppercase font-bold text-slate-500 dark:text-zinc-500 tracking-widest'}}) }}
-                    {{ form_widget(profileForm.username, {'attr': {'class': 'w-full bg-transparent border-b-2 border-slate-100 dark:border-zinc-900 py-4 font-mono text-base focus:outline-none focus:border-blue-900 dark:focus:border-blue-500 transition-all duration-500'}}) }}
+            {{ form_start(profileForm, {'attr': {'class': 'space-y-12 relative z-10'}}) }}
+                <div class="space-y-4">
+                    {{ form_label(profileForm.username, null, {'label_attr': {'class': 'block font-mono text-[11px] uppercase tracking-[0.3em] text-slate-500 dark:text-zinc-500 font-black ml-2'}}) }}
+                    <div class="relative group/input">
+                        {{ form_widget(profileForm.username, {'attr': {'class': 'premium-input w-full pl-20 pr-8 py-5 text-slate-900 dark:text-white outline-none rounded-2xl', 'placeholder': 'Nom d\'utilisateur'}}) }}
+                        <div class="input-icon-container text-slate-400 dark:text-zinc-600 group-focus-within/input:text-blue-900 dark:group-focus-within/input:text-blue-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        </div>
+                    </div>
                     {{ form_errors(profileForm.username) }}
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-                    <div class="space-y-3">
-                        {{ form_label(profileForm.plainPassword.first, null, {'label_attr': {'class': 'block font-mono text-[9px] uppercase font-bold text-slate-500 dark:text-zinc-500 tracking-widest'}}) }}
-                        {{ form_widget(profileForm.plainPassword.first, {'attr': {'class': 'w-full bg-transparent border-b-2 border-slate-100 dark:border-zinc-900 py-4 font-mono text-base focus:outline-none focus:border-blue-900 dark:focus:border-blue-500 transition-all duration-500', 'placeholder': '••••••••'}}) }}
+                    <div class="space-y-4">
+                        {{ form_label(profileForm.plainPassword.first, "Nouveau mot de passe", {'label_attr': {'class': 'block font-mono text-[11px] uppercase tracking-[0.3em] text-slate-500 dark:text-zinc-500 font-black ml-2'}}) }}
+                        <div class="relative group/input">
+                            {{ form_widget(profileForm.plainPassword.first, {'attr': {'class': 'premium-input w-full pl-20 pr-8 py-5 text-slate-900 dark:text-white outline-none rounded-2xl', 'placeholder': '••••••••'}}) }}
+                            <div class="input-icon-container text-slate-400 dark:text-zinc-600 group-focus-within/input:text-blue-900 dark:group-focus-within/input:text-blue-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                            </div>
+                        </div>
                     </div>
-                    <div class="space-y-3">
-                        {{ form_label(profileForm.plainPassword.second, null, {'label_attr': {'class': 'block font-mono text-[9px] uppercase font-bold text-slate-500 dark:text-zinc-500 tracking-widest'}}) }}
-                        {{ form_widget(profileForm.plainPassword.second, {'attr': {'class': 'w-full bg-transparent border-b-2 border-slate-100 dark:border-zinc-900 py-4 font-mono text-base focus:outline-none focus:border-blue-900 dark:focus:border-blue-500 transition-all duration-500', 'placeholder': '••••••••'}}) }}
+                    <div class="space-y-4">
+                        {{ form_label(profileForm.plainPassword.second, "Confirmation", {'label_attr': {'class': 'block font-mono text-[11px] uppercase tracking-[0.3em] text-slate-500 dark:text-zinc-500 font-black ml-2'}}) }}
+                        <div class="relative group/input">
+                            {{ form_widget(profileForm.plainPassword.second, {'attr': {'class': 'premium-input w-full pl-20 pr-8 py-5 text-slate-900 dark:text-white outline-none rounded-2xl', 'placeholder': '••••••••'}}) }}
+                            <div class="input-icon-container text-slate-400 dark:text-zinc-600 group-focus-within/input:text-blue-900 dark:group-focus-within/input:text-blue-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 {{ form_errors(profileForm.plainPassword.first) }}
 
-                <div class="pt-6">
-                    <button type="submit" class="group relative w-full bg-slate-900 dark:bg-white text-white dark:text-black font-black uppercase tracking-[0.4em] py-6 text-xs overflow-hidden transition-all duration-500 hover:bg-blue-900 dark:hover:bg-blue-500 dark:hover:text-white">
-                        <span class="relative z-10">Mettre à jour le profil</span>
+                <div class="flex justify-end pt-10">
+                    <button type="submit" class="duclos-link glow-button bg-blue-900 dark:bg-white text-white dark:text-black px-16 py-6 text-xs font-black uppercase tracking-[0.4em] rounded-2xl flex items-center gap-6 shadow-2xl focus:outline-none">
+                        Enregistrer les modifications
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                     </button>
                 </div>
             {{ form_end(profileForm) }}
         </section>
 
         <!-- Section: Nouveau Compte -->
-        <section>
-            <div class="mb-12">
-                <h2 class="text-xs font-black uppercase tracking-[0.3em] text-slate-400 dark:text-zinc-600 border-b border-slate-100 dark:border-zinc-900 pb-4 mb-10">02. Création d'Accès</h2>
+        <section class="glass-card p-12 relative overflow-hidden group rounded-[2.5rem]">
+            <div class="absolute -top-32 -right-32 w-64 h-64 bg-blue-900/5 dark:bg-blue-500/5 rounded-full blur-3xl group-hover:bg-blue-900/10 dark:group-hover:bg-blue-500/10 transition-all duration-1000"></div>
+
+            <div class="mb-16 relative z-10 flex items-center justify-between">
+                <div class="flex items-center gap-6">
+                    <div class="h-12 w-12 rounded-2xl bg-slate-900 dark:bg-white flex items-center justify-center text-white dark:text-black font-black text-lg shadow-xl">02</div>
+                    <h3 class="text-xl font-black uppercase tracking-[0.2em] text-slate-900 dark:text-white">Création d'Accès</h3>
+                </div>
+                <div class="h-px flex-grow mx-10 bg-slate-200 dark:bg-zinc-800 opacity-50"></div>
             </div>
 
-            {{ form_start(userForm, {'attr': {'class': 'space-y-10'}}) }}
-                <div class="space-y-3">
-                    {{ form_label(userForm.username, null, {'label_attr': {'class': 'block font-mono text-[9px] uppercase font-bold text-slate-500 dark:text-zinc-500 tracking-widest'}}) }}
-                    {{ form_widget(userForm.username, {'attr': {'class': 'w-full bg-transparent border-b-2 border-slate-100 dark:border-zinc-900 py-4 font-mono text-base focus:outline-none focus:border-blue-900 dark:focus:border-blue-500 transition-all duration-500'}}) }}
+            {{ form_start(userForm, {'attr': {'class': 'space-y-12 relative z-10'}}) }}
+                <div class="space-y-4">
+                    {{ form_label(userForm.username, null, {'label_attr': {'class': 'block font-mono text-[11px] uppercase tracking-[0.3em] text-slate-500 dark:text-zinc-500 font-black ml-2'}}) }}
+                    <div class="relative group/input">
+                        {{ form_widget(userForm.username, {'attr': {'class': 'premium-input w-full pl-20 pr-8 py-5 text-slate-900 dark:text-white outline-none rounded-2xl', 'placeholder': 'Nouvel administrateur'}}) }}
+                        <div class="input-icon-container text-slate-400 dark:text-zinc-600 group-focus-within/input:text-blue-900 dark:group-focus-within/input:text-blue-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="17" y1="11" x2="23" y2="11"/></svg>
+                        </div>
+                    </div>
                     {{ form_errors(userForm.username) }}
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-                    <div class="space-y-3">
-                        {{ form_label(userForm.plainPassword.first, null, {'label_attr': {'class': 'block font-mono text-[9px] uppercase font-bold text-slate-500 dark:text-zinc-500 tracking-widest'}}) }}
-                        {{ form_widget(userForm.plainPassword.first, {'attr': {'class': 'w-full bg-transparent border-b-2 border-slate-100 dark:border-zinc-900 py-4 font-mono text-base focus:outline-none focus:border-blue-900 dark:focus:border-blue-500 transition-all duration-500', 'placeholder': '••••••••'}}) }}
+                    <div class="space-y-4">
+                        {{ form_label(userForm.plainPassword.first, "Mot de passe", {'label_attr': {'class': 'block font-mono text-[11px] uppercase tracking-[0.3em] text-slate-500 dark:text-zinc-500 font-black ml-2'}}) }}
+                        <div class="relative group/input">
+                            {{ form_widget(userForm.plainPassword.first, {'attr': {'class': 'premium-input w-full pl-20 pr-8 py-5 text-slate-900 dark:text-white outline-none rounded-2xl', 'placeholder': '••••••••'}}) }}
+                            <div class="input-icon-container text-slate-400 dark:text-zinc-600 group-focus-within/input:text-blue-900 dark:group-focus-within/input:text-blue-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                            </div>
+                        </div>
                     </div>
-                    <div class="space-y-3">
-                        {{ form_label(userForm.plainPassword.second, null, {'label_attr': {'class': 'block font-mono text-[9px] uppercase font-bold text-slate-500 dark:text-zinc-500 tracking-widest'}}) }}
-                        {{ form_widget(userForm.plainPassword.second, {'attr': {'class': 'w-full bg-transparent border-b-2 border-slate-100 dark:border-zinc-900 py-4 font-mono text-base focus:outline-none focus:border-blue-900 dark:focus:border-blue-500 transition-all duration-500', 'placeholder': '••••••••'}}) }}
+                    <div class="space-y-4">
+                        {{ form_label(userForm.plainPassword.second, "Confirmation", {'label_attr': {'class': 'block font-mono text-[11px] uppercase tracking-[0.3em] text-slate-500 dark:text-zinc-500 font-black ml-2'}}) }}
+                        <div class="relative group/input">
+                            {{ form_widget(userForm.plainPassword.second, {'attr': {'class': 'premium-input w-full pl-20 pr-8 py-5 text-slate-900 dark:text-white outline-none rounded-2xl', 'placeholder': '••••••••'}}) }}
+                            <div class="input-icon-container text-slate-400 dark:text-zinc-600 group-focus-within/input:text-blue-900 dark:group-focus-within/input:text-blue-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 {{ form_errors(userForm.plainPassword.first) }}
 
-                <div class="pt-6">
-                    <button type="submit" class="w-full border-2 border-slate-900 dark:border-white text-slate-900 dark:text-white font-black uppercase tracking-[0.4em] py-6 text-xs hover:bg-slate-900 dark:hover:bg-white hover:text-white dark:hover:text-black transition-all duration-500">
-                        Créer le compte administrateur
+                <div class="flex justify-end pt-10">
+                    <button type="submit" class="duclos-link glow-button border-2 border-slate-900 dark:border-white text-slate-900 dark:text-white hover:bg-slate-900 dark:hover:bg-white hover:text-white dark:hover:text-black px-16 py-6 text-xs font-black uppercase tracking-[0.4em] rounded-2xl transition-all flex items-center gap-6 shadow-xl focus:outline-none">
+                        Créer l'administrateur
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                     </button>
                 </div>
             {{ form_end(userForm) }}
         </section>
 
         <!-- Section: Liste des Admins -->
-        <section>
-            <div class="mb-12">
-                <h2 class="text-xs font-black uppercase tracking-[0.3em] text-slate-400 dark:text-zinc-600 border-b border-slate-100 dark:border-zinc-900 pb-4 mb-10">03. Administrateurs Actifs</h2>
+        <section class="glass-card p-12 relative overflow-hidden group rounded-[2.5rem]">
+            <div class="absolute -top-32 -right-32 w-64 h-64 bg-blue-900/5 dark:bg-blue-500/5 rounded-full blur-3xl group-hover:bg-blue-900/10 dark:group-hover:bg-blue-500/10 transition-all duration-1000"></div>
+
+            <div class="mb-16 relative z-10 flex items-center justify-between">
+                <div class="flex items-center gap-6">
+                    <div class="h-12 w-12 rounded-2xl bg-slate-900 dark:bg-white flex items-center justify-center text-white dark:text-black font-black text-lg shadow-xl">03</div>
+                    <h3 class="text-xl font-black uppercase tracking-[0.2em] text-slate-900 dark:text-white">Administrateurs Actifs</h3>
+                </div>
+                <div class="h-px flex-grow mx-10 bg-slate-200 dark:bg-zinc-800 opacity-50"></div>
             </div>
 
-            <div class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
                 {% for user in users %}
-                <div class="flex items-center justify-between py-6 border-b border-slate-50 dark:border-zinc-900 group hover:px-4 transition-all duration-300">
+                <div class="duclos-link flex items-center justify-between p-8 bg-white/40 dark:bg-zinc-900/40 border border-slate-200/50 dark:border-zinc-800/50 rounded-[2rem] group/item hover:border-blue-900 dark:hover:border-blue-500 transition-all duration-700 hover:shadow-2xl hover:-translate-y-1 cursor-pointer">
                     <div class="flex items-center gap-8">
-                        <span class="font-mono text-[10px] text-slate-300 dark:text-zinc-800 group-hover:text-blue-900 dark:group-hover:text-blue-500 transition-colors">ID_0{{ user.id }}</span>
+                        <div class="h-16 w-16 rounded-2xl bg-slate-100 dark:bg-zinc-800 flex items-center justify-center text-slate-400 dark:text-zinc-600 group-hover/item:bg-blue-900 dark:group-hover/item:bg-blue-500 group-hover/item:text-white transition-all duration-700 shadow-inner">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        </div>
                         <div>
-                            <div class="font-black text-slate-900 dark:text-white uppercase tracking-[0.2em] text-sm">{{ user.username }}</div>
-                            <div class="text-[9px] font-mono text-slate-400 dark:text-zinc-600 uppercase mt-1">Accès Total // Système</div>
+                            <div class="font-black text-slate-900 dark:text-white uppercase tracking-[0.1em] text-lg">{{ user.username }}</div>
+                            <div class="text-xs font-mono text-slate-500 dark:text-zinc-500 uppercase mt-2 tracking-widest">Accès Total // ID_0{{ user.id }}</div>
                         </div>
                     </div>
                     <div class="flex items-center gap-4">
-                        <div class="h-px w-8 bg-slate-100 dark:bg-zinc-900 group-hover:w-12 group-hover:bg-blue-900 dark:group-hover:bg-blue-500 transition-all duration-500"></div>
-                        <div class="h-2 w-2 rounded-full bg-slate-200 dark:bg-zinc-800 group-hover:bg-blue-900 dark:group-hover:bg-blue-500 transition-all duration-500"></div>
+                        <div class="h-4 w-4 rounded-full bg-blue-900 dark:bg-blue-500 shadow-[0_0_20px_rgba(30,58,138,0.8)] dark:shadow-[0_0_20px_rgba(59,130,246,0.8)] animate-pulse"></div>
                     </div>
                 </div>
                 {% endfor %}
             </div>
         </section>
+    </div>
+
+    <div class="mt-24 flex items-center gap-8 text-slate-400 dark:text-zinc-600 font-mono text-[11px] uppercase tracking-[0.6em] opacity-50">
+        <div class="h-px flex-grow bg-slate-200 dark:bg-zinc-800"></div>
+        <span>Sovereign Admin Interface v3.0</span>
+        <div class="h-px flex-grow bg-slate-200 dark:bg-zinc-800"></div>
     </div>
 </div>
 {% endblock %}
