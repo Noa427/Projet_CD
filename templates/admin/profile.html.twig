@@ -1,0 +1,118 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}GESTION PROFIL | CERCLE DUCLOS{% endblock %}
+
+{% block body %}
+<div class="max-w-2xl mx-auto px-6 pb-40">
+    <!-- Brute Force Header Fix -->
+    <div class="mt-48 mb-24 text-center relative z-0">
+        <h1 class="text-4xl font-black tracking-tighter uppercase text-slate-900 dark:text-white mb-6">Gestion Profil</h1>
+        <div class="flex justify-center">
+            <div class="h-1 w-12 bg-blue-900 dark:bg-blue-500"></div>
+        </div>
+        <p class="font-mono text-[10px] text-slate-400 dark:text-zinc-600 uppercase tracking-[0.5em] mt-8">Administration Système</p>
+    </div>
+
+    {% for message in app.flashes('success') %}
+        <div class="bg-blue-900 dark:bg-blue-600 text-white px-8 py-5 mb-20 font-mono text-[10px] uppercase tracking-[0.2em] text-center shadow-2xl">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    <div class="space-y-32">
+        <!-- Section: Mon Profil -->
+        <section>
+            <div class="mb-12">
+                <h2 class="text-xs font-black uppercase tracking-[0.3em] text-slate-400 dark:text-zinc-600 border-b border-slate-100 dark:border-zinc-900 pb-4 mb-10">01. Mes Identifiants</h2>
+            </div>
+
+            {{ form_start(profileForm, {'attr': {'class': 'space-y-10'}}) }}
+                <div class="space-y-3">
+                    {{ form_label(profileForm.username, null, {'label_attr': {'class': 'block font-mono text-[9px] uppercase font-bold text-slate-500 dark:text-zinc-500 tracking-widest'}}) }}
+                    {{ form_widget(profileForm.username, {'attr': {'class': 'w-full bg-transparent border-b-2 border-slate-100 dark:border-zinc-900 py-4 font-mono text-base focus:outline-none focus:border-blue-900 dark:focus:border-blue-500 transition-all duration-500'}}) }}
+                    {{ form_errors(profileForm.username) }}
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    <div class="space-y-3">
+                        {{ form_label(profileForm.plainPassword.first, null, {'label_attr': {'class': 'block font-mono text-[9px] uppercase font-bold text-slate-500 dark:text-zinc-500 tracking-widest'}}) }}
+                        {{ form_widget(profileForm.plainPassword.first, {'attr': {'class': 'w-full bg-transparent border-b-2 border-slate-100 dark:border-zinc-900 py-4 font-mono text-base focus:outline-none focus:border-blue-900 dark:focus:border-blue-500 transition-all duration-500', 'placeholder': '••••••••'}}) }}
+                    </div>
+                    <div class="space-y-3">
+                        {{ form_label(profileForm.plainPassword.second, null, {'label_attr': {'class': 'block font-mono text-[9px] uppercase font-bold text-slate-500 dark:text-zinc-500 tracking-widest'}}) }}
+                        {{ form_widget(profileForm.plainPassword.second, {'attr': {'class': 'w-full bg-transparent border-b-2 border-slate-100 dark:border-zinc-900 py-4 font-mono text-base focus:outline-none focus:border-blue-900 dark:focus:border-blue-500 transition-all duration-500', 'placeholder': '••••••••'}}) }}
+                    </div>
+                </div>
+                {{ form_errors(profileForm.plainPassword.first) }}
+
+                <div class="pt-6">
+                    <button type="submit" class="group relative w-full bg-slate-900 dark:bg-white text-white dark:text-black font-black uppercase tracking-[0.4em] py-6 text-xs overflow-hidden transition-all duration-500 hover:bg-blue-900 dark:hover:bg-blue-500 dark:hover:text-white">
+                        <span class="relative z-10">Mettre à jour le profil</span>
+                    </button>
+                </div>
+            {{ form_end(profileForm) }}
+        </section>
+
+        <!-- Section: Nouveau Compte -->
+        <section>
+            <div class="mb-12">
+                <h2 class="text-xs font-black uppercase tracking-[0.3em] text-slate-400 dark:text-zinc-600 border-b border-slate-100 dark:border-zinc-900 pb-4 mb-10">02. Création d'Accès</h2>
+            </div>
+
+            {{ form_start(userForm, {'attr': {'class': 'space-y-10'}}) }}
+                <div class="space-y-3">
+                    {{ form_label(userForm.username, null, {'label_attr': {'class': 'block font-mono text-[9px] uppercase font-bold text-slate-500 dark:text-zinc-500 tracking-widest'}}) }}
+                    {{ form_widget(userForm.username, {'attr': {'class': 'w-full bg-transparent border-b-2 border-slate-100 dark:border-zinc-900 py-4 font-mono text-base focus:outline-none focus:border-blue-900 dark:focus:border-blue-500 transition-all duration-500'}}) }}
+                    {{ form_errors(userForm.username) }}
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    <div class="space-y-3">
+                        {{ form_label(userForm.plainPassword.first, null, {'label_attr': {'class': 'block font-mono text-[9px] uppercase font-bold text-slate-500 dark:text-zinc-500 tracking-widest'}}) }}
+                        {{ form_widget(userForm.plainPassword.first, {'attr': {'class': 'w-full bg-transparent border-b-2 border-slate-100 dark:border-zinc-900 py-4 font-mono text-base focus:outline-none focus:border-blue-900 dark:focus:border-blue-500 transition-all duration-500', 'placeholder': '••••••••'}}) }}
+                    </div>
+                    <div class="space-y-3">
+                        {{ form_label(userForm.plainPassword.second, null, {'label_attr': {'class': 'block font-mono text-[9px] uppercase font-bold text-slate-500 dark:text-zinc-500 tracking-widest'}}) }}
+                        {{ form_widget(userForm.plainPassword.second, {'attr': {'class': 'w-full bg-transparent border-b-2 border-slate-100 dark:border-zinc-900 py-4 font-mono text-base focus:outline-none focus:border-blue-900 dark:focus:border-blue-500 transition-all duration-500', 'placeholder': '••••••••'}}) }}
+                    </div>
+                </div>
+                {{ form_errors(userForm.plainPassword.first) }}
+
+                <div class="pt-6">
+                    <button type="submit" class="w-full border-2 border-slate-900 dark:border-white text-slate-900 dark:text-white font-black uppercase tracking-[0.4em] py-6 text-xs hover:bg-slate-900 dark:hover:bg-white hover:text-white dark:hover:text-black transition-all duration-500">
+                        Créer le compte administrateur
+                    </button>
+                </div>
+            {{ form_end(userForm) }}
+        </section>
+
+        <!-- Section: Liste des Admins -->
+        <section>
+            <div class="mb-12">
+                <h2 class="text-xs font-black uppercase tracking-[0.3em] text-slate-400 dark:text-zinc-600 border-b border-slate-100 dark:border-zinc-900 pb-4 mb-10">03. Administrateurs Actifs</h2>
+            </div>
+
+            <div class="space-y-6">
+                {% for user in users %}
+                <div class="flex items-center justify-between py-6 border-b border-slate-50 dark:border-zinc-900 group hover:px-4 transition-all duration-300">
+                    <div class="flex items-center gap-8">
+                        <span class="font-mono text-[10px] text-slate-300 dark:text-zinc-800 group-hover:text-blue-900 dark:group-hover:text-blue-500 transition-colors">ID_0{{ user.id }}</span>
+                        <div>
+                            <div class="font-black text-slate-900 dark:text-white uppercase tracking-[0.2em] text-sm">{{ user.username }}</div>
+                            <div class="text-[9px] font-mono text-slate-400 dark:text-zinc-600 uppercase mt-1">Accès Total // Système</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="h-px w-8 bg-slate-100 dark:bg-zinc-900 group-hover:w-12 group-hover:bg-blue-900 dark:group-hover:bg-blue-500 transition-all duration-500"></div>
+                        <div class="h-2 w-2 rounded-full bg-slate-200 dark:bg-zinc-800 group-hover:bg-blue-900 dark:group-hover:bg-blue-500 transition-all duration-500"></div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}
+
+
+

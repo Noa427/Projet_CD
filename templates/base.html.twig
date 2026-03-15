@@ -82,67 +82,69 @@
 
         /* FORCE LOGO SIZE */
         #header-logo {
-            max-height: 120px !important;
+            max-height: calc(120px - (var(--scroll-progress, 0) * 75px)) !important;
             width: auto !important;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
         }
 
         /* HEADER BASE STATE (COLUMN) */
         #main-header {
+            --scroll-progress: 0;
             display: flex !important;
             flex-direction: column !important;
             align-items: center !important;
             justify-content: center !important;
-            padding-top: 3rem !important;
-            padding-bottom: 3rem !important;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            padding-top: calc(3rem - (var(--scroll-progress, 0) * 2.25rem)) !important;
+            padding-bottom: calc(3rem - (var(--scroll-progress, 0) * 2.25rem)) !important;
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
             z-index: 1000 !important;
+            
+            /* Progressive Visuals - Restored Base Background */
+            background-color: rgba(255, 255, 255, calc(0.9 + (var(--scroll-progress, 0) * 0.08))) !important;
+            backdrop-filter: blur(calc(4px + (var(--scroll-progress, 0) * 16px))) !important;
+            border-bottom-color: rgba(226, 232, 240, calc(var(--scroll-progress, 0) * 0.8)) !important;
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, calc(var(--scroll-progress, 0) * 0.1)) !important;
+        }
+
+        .dark #main-header {
+            background-color: rgba(0, 0, 0, calc(0.85 + (var(--scroll-progress, 0) * 0.1))) !important;
+            border-bottom-color: rgba(39, 39, 42, calc(var(--scroll-progress, 0) * 0.8)) !important;
         }
 
         #header-container {
             display: flex !important;
             flex-direction: column !important;
             align-items: center !important;
-            gap: 2rem !important;
+            gap: calc(2rem - (var(--scroll-progress, 0) * 2rem)) !important;
             width: 100% !important;
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
         }
 
         #header-logo-group a {
             display: flex !important;
             flex-direction: column !important;
             align-items: center !important;
-            gap: 1rem !important;
+            gap: calc(1rem - (var(--scroll-progress, 0) * 0.25rem)) !important;
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
         }
 
         #header-title {
-            font-size: 2.5rem !important;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            font-size: calc(2.5rem - (var(--scroll-progress, 0) * 1.3rem)) !important;
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
         }
 
-        /* SCROLLED STATE (ROW) */
+        /* SCROLLED STATE (ROW) - Layout Jump handled by class */
         body.is-scrolled #main-header {
             flex-direction: row !important;
-            padding-top: 0.5rem !important;
-            padding-bottom: 0.5rem !important;
         }
 
         body.is-scrolled #main-header #header-container {
             flex-direction: row !important;
             justify-content: space-between !important;
-            gap: 0 !important;
         }
 
         body.is-scrolled #main-header #header-logo-group a {
             flex-direction: row !important;
-            gap: 0.75rem !important;
-        }
-
-        body.is-scrolled #main-header #header-logo {
-            max-height: 50px !important;
-        }
-
-        body.is-scrolled #main-header #header-title {
-            font-size: 1.2rem !important;
         }
 
         body.is-scrolled #main-header #theme-toggle-container {
@@ -154,27 +156,27 @@
             display: flex !important;
             opacity: 1 !important;
             visibility: visible !important;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
         }
     </style>
 
     <!-- NAVBAR -->
     <header id="main-header" class="fixed top-0 w-full z-50 bg-white/95 dark:bg-black/90 backdrop-blur-md border-b border-slate-200 dark:border-zinc-800 shadow-sm">
+        <div class="absolute inset-y-0 left-0 flex items-center z-[1001] pointer-events-none" style="padding-left: 3rem !important;">
+            {% if app.user and is_granted('ROLE_ADMIN') %}
+            <div class="flex flex-col items-start whitespace-nowrap pointer-events-auto">
+                <span class="font-black text-blue-900 dark:text-blue-500 uppercase tracking-[0.3em] leading-none mb-1" style="font-size: 9px !important;">SECTION ADMIN</span>
+                <span class="font-mono text-slate-500 dark:text-zinc-500 uppercase tracking-widest leading-none" style="font-size: 11px !important;">{{ app.user.username }}</span>
+            </div>
+            {% endif %}
+        </div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
             
             <!-- Desktop version -->
             <div class="hidden lg:flex" id="header-container">
                 
-                <!-- Admin Section (Top Left) -->
-                {% if app.user and is_granted('ROLE_ADMIN') %}
-                <div class="absolute left-8 top-4 flex flex-col items-start pointer-events-none">
-                    <span class="text-[10px] font-black text-blue-900 dark:text-blue-500 uppercase tracking-[0.3em] leading-none mb-1">SECTION ADMIN</span>
-                    <span class="text-[11px] font-mono text-slate-500 dark:text-zinc-500 uppercase tracking-widest leading-none">{{ app.user.username }}</span>
-                </div>
-                {% endif %}
-
                 <!-- Logo & Title Group -->
-                <div id="header-logo-group">
+                <div id="header-logo-group" class="relative">
                     <a href="{{ path('app_home') }}" class="group">
                         <img src="{{ asset('images/logocd.png') }}" alt="Cercle Duclos" id="header-logo">
                         <span class="font-black tracking-[0.2em] text-slate-900 dark:text-white uppercase" id="header-title">
@@ -224,6 +226,7 @@
                         <div class="absolute left-1/2 -translate-x-1/2 top-full pt-2 w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                             <div class="bg-white dark:bg-black border border-slate-200 dark:border-zinc-800 border-l-2 border-l-blue-900 dark:border-l-blue-500 shadow-xl p-2">
                                 <a href="{{ path('admin_article_new') }}" class="block px-3 py-2 text-xs font-mono uppercase transition-colors font-semibold text-slate-600 dark:text-zinc-400 hover:text-blue-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-zinc-900/50">Création d'article</a>
+                                <a href="{{ path('admin_profile') }}" class="block px-3 py-2 text-xs font-mono uppercase transition-colors font-semibold text-slate-600 dark:text-zinc-400 hover:text-blue-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-zinc-900/50">Gestion Profil</a>
                             </div>
                         </div>
                     </div>
@@ -290,7 +293,7 @@
         </div>
     </div>
 
-    <main class="flex-grow z-10">
+    <main class="flex-grow relative z-10 pt-32 lg:pt-48">
         {% block body %}{% endblock %}
     </main>
 
